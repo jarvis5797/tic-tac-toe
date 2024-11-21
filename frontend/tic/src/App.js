@@ -1,13 +1,30 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { addUser, getAllUsers } from './service/user-service';
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [winner, setWinner] = useState(null);
 
-  // Determine the winner
+
+  const[users, setUsers] = useState([]);
+
+  const[userName , setUserName] = useState();
+
+ 
+
+  useEffect(() => {
+    getAllUsers().then((resp) => {
+      setUsers(resp);  
+    });
+  }, []);  
+  
+  useEffect(() => {
+    console.log(users); 
+  }, [users]);
+
   const calculateWinner = (squares) => {
     const lines = [
       [0, 1, 2],
@@ -52,6 +69,16 @@ function App() {
     setIsXNext(true);
     setWinner(null);
   };
+
+  const handleChange= (event)=>{
+    setUserName(event.target.value);
+  }
+
+
+  const handleAddButton = () =>{
+    addUser(userName).then((resp)=>console.log(resp))
+  }
+
   return (
     <div className='container'>
       <div className="navbar">
@@ -60,10 +87,10 @@ function App() {
           <input
             type="text"
             placeholder="ADD User"
-            // value={username} 
             className="username-input"
+            onChange={(e)=> handleChange(e)}
           />
-          <button className='add-button'>Add</button>
+          <button className='add-button' onClick={handleAddButton}>Add</button>
         </div>
       </div>
       <div className="games">
@@ -78,16 +105,20 @@ function App() {
 
         <div className='info'>
           <form>
-            <select id="user1" name="User1">
-              <option value="au">jarvis</option>
-              <option value="ca">froster</option>
-              <option value="us">tuxedo</option>
-            </select>
-            <select id="user2" name="User2">
-              <option value="au">jarvis</option>
-              <option value="ca">froster</option>
-              <option value="us">tuxedo</option>
-            </select>
+          <select id="user1" name="User1">
+      {users.map((user) => (
+        <option key={user} value={user}>
+          {user}
+        </option>
+      ))}
+    </select>
+    <select id="user2" name="User2">
+      {users.map((user) => (
+        <option key={user} value={user}>
+          {user}
+        </option>
+      ))}
+      </select>
           </form>
           <div className='turn'>
             <h1>Turn : jarvis </h1>
