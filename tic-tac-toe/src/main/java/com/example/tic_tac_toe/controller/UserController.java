@@ -29,4 +29,10 @@ public class UserController {
 	public ResponseEntity<?> getAllNames(){
 		return ResponseEntity.status(HttpStatus.OK).body(userService.allUsersName());
 	}
+	
+	@GetMapping("/userDetail")
+	public ResponseEntity<?>getUserDetail(@RequestParam(name = "name") String name){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getUserDetail(name));
+	}
+	
 }
