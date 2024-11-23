@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { addUser, getAllUsers, getUserDetail } from './service/user-service';
+import { addUser, getAllUsers, getUserDetail, updateUserStatus } from './service/user-service';
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -17,13 +17,12 @@ function App() {
 
   const [userDetail2, setUserDetail2] = useState(null);
 
-  // const [userStatus , setUserStatus] = useState({player1name , player1Status , player2name , player2Status})
 
   const updateWinner = (winnerName , loserName , isDraw)=>{
     return {
-      player1name : winnerName,
+      player1Name : winnerName,
       player1Status : isDraw?"draw":"winner",
-      player2name :loserName,
+      player2Name :loserName,
       player2Status :isDraw?"draw":"loser"
     }
   }
@@ -33,14 +32,6 @@ function App() {
       setUsers(resp);
     });
   }, []);
-
-  useEffect(() => {
-    console.log(userDetail1);
-  }, [userDetail1]);
-
-  useEffect(() => {
-    console.log(userDetail2);
-  }, [userDetail2]);
 
   const calculateWinner = (squares) => {
     const lines = [
@@ -57,7 +48,7 @@ function App() {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if ( squares[a] === squares[b] && squares[a] === squares[c]) {
-        // console.log(squares[a]);
+       
         
         return squares[a];
       }
@@ -66,26 +57,49 @@ function App() {
   };
 
   const handleClick = (index) => {
-    if (board[index] || winner || userDetail1==null || userDetail2==null) return; // If the square is already filled or there's a winner
+    if (board[index] || winner || userDetail1==null || userDetail2==null) return; 
     const newBoard = board.slice();
-    // const newBoard2 = board.slice();
+
     newBoard[index] = isXNext ? 'X': 'O';
-    // newBoard2[index] = isXNext ? <h1>X</h1> : <h1>O</h1>;
+  
     setBoard(newBoard);
     setIsXNext(!isXNext);
     const currentWinner = calculateWinner(newBoard);
     if (currentWinner) {
       setWinner(currentWinner);
-      updateWinner(currentWinner==='X'?userDetail1.name:userDetail2.name , currentWinner==='X'?userDetail2.name:userDetail1.name , false)
-      // console.log(updateWinner(currentWinner==='X'?userDetail1.name:userDetail2.name , currentWinner==='X'?userDetail2.name:userDetail1.name));
+      updateUserStatus(updateWinner(currentWinner==='X'?userDetail1.name:userDetail2.name , currentWinner==='X'?userDetail2.name:userDetail1.name , false)).then((resp)=>{
+        if (resp[0].name === userDetail1.name) {
+          setUserDetail1(resp[0]); 
+        } else {
+          setUserDetail2(resp[0]); 
+        }
+
+        if (resp[1].name === userDetail2.name) {
+          setUserDetail2(resp[1]); 
+        } else {
+          setUserDetail1(resp[1]); 
+        }
+      })
       
     }
     else {
-      // Check for draw
+   
       if (!newBoard.includes(null)) {
-        setWinner('Draw'); // Set the winner as 'Draw' when the board is full and no winner
-        updateWinner(userDetail1.name ,userDetail2.name , true)
-        // console.log(updateWinner(userDetail1.name ,userDetail2.name , true));
+        setWinner('Draw'); 
+        updateUserStatus(updateWinner(userDetail1.name ,userDetail2.name , true)).then((resp)=>{
+          if (resp[0].name === userDetail1.name) {
+            setUserDetail1(resp[0]); 
+          } else {
+            setUserDetail2(resp[0]); 
+          }
+  
+          if (resp[1].name === userDetail2.name) {
+            setUserDetail2(resp[1]); 
+          } else {
+            setUserDetail1(resp[1]); 
+          }
+        })
+       
         
       }
     }
