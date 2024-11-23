@@ -12,3 +12,7 @@ export const getAllUsers=()=>{
 export const getUserDetail=(userName)=>{
     return connectBackend.get(`/userDetail?name=${userName}`).then((response)=>response.data);
 }
+
+export const updateUserStatus=(userStatus)=>{
+    return connectBackend.post("/updateStatus",userStatus).then((response)=>response.data);
+}

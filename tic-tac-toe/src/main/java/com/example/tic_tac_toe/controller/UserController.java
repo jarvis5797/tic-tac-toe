@@ -2,14 +2,17 @@ package com.example.tic_tac_toe.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tic_tac_toe.dao.UpdateStatusDao;
 import com.example.tic_tac_toe.services.UserService;
 
 @RestController
@@ -31,8 +34,13 @@ public class UserController {
 	}
 	
 	@GetMapping("/userDetail")
-	public ResponseEntity<?>getUserDetail(@RequestParam(name = "name") String name){
+	public ResponseEntity<?> getUserDetail(@RequestParam(name = "name") String name){
 		return ResponseEntity.status(HttpStatus.OK).body(userService.getUserDetail(name));
+	}
+	
+	@PostMapping("/updateStatus")
+	public ResponseEntity<?> updateUserStatus(@RequestBody UpdateStatusDao updateStatusDao){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.updateUserStatus(updateStatusDao));
 	}
 	
 }
