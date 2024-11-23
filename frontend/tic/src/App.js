@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { addUser, getAllUsers } from './service/user-service';
+import { addUser, getAllUsers, getUserDetail } from './service/user-service';
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -13,7 +13,9 @@ function App() {
 
   const[userName , setUserName] = useState();
 
+  const[userDetail1, setUserDetail1] = useState({});
  
+  const[userDetail2 , setUserDetail2] = useState({});
 
   useEffect(() => {
     getAllUsers().then((resp) => {
@@ -22,8 +24,12 @@ function App() {
   }, []);  
   
   useEffect(() => {
-    console.log(users); 
-  }, [users]);
+    console.log(userDetail1);
+  }, [userDetail1]);
+
+  useEffect(() => {
+    console.log(userDetail2);
+  }, [userDetail2]);
 
   const calculateWinner = (squares) => {
     const lines = [
@@ -79,6 +85,18 @@ function App() {
     addUser(userName).then((resp)=>console.log(resp))
   }
 
+  const handleSelect1=(event) =>{
+    getUserDetail(event.target.value).then((resp)=>{
+      setUserDetail1(resp);
+    })
+  }
+
+  const handleSelect2=(event) =>{
+    getUserDetail(event.target.value).then((resp)=>{
+      setUserDetail2(resp);
+    })
+  }
+
   return (
     <div className='container'>
       <div className="navbar">
@@ -105,14 +123,16 @@ function App() {
 
         <div className='info'>
           <form>
-          <select id="user1" name="User1">
+          <select id="user1" name="User1" onChange={(e)=>handleSelect1(e)}>
+          <option > select player</option>
       {users.map((user) => (
         <option key={user} value={user}>
           {user}
         </option>
       ))}
     </select>
-    <select id="user2" name="User2">
+    <select id="user2" name="User2" onChange={(e)=>handleSelect2(e)}>
+    <option > select player</option>
       {users.map((user) => (
         <option key={user} value={user}>
           {user}
@@ -134,18 +154,18 @@ function App() {
             <th>lost</th>
             <th>draw</th>
           </tr>
-          <tr>
-            <td>Alfreds Futterkiste</td>
-            <td>Maria Anders</td>
-            <td>Germany</td>
-            <td>Germany</td>
-          </tr>
-          <tr>
-            <td>Berglunds snabbköp</td>
-            <td>Christina Berglund</td>
-            <td>Sweden</td>
-            <td>Germany</td>
-          </tr>
+      <tr>
+        <td>{userDetail1?.name || 'Player 1'}</td>
+        <td>{userDetail1?.winCount || 0}</td>
+        <td>{userDetail1?.lossCount || 0}</td>
+        <td>{userDetail1?.drawCount || 0}</td>
+      </tr>
+      <tr>
+        <td>{userDetail2?.name || 'Player 2'}</td>
+        <td>{userDetail2?.winCount || 0}</td>
+        <td>{userDetail2?.lossCount || 0}</td>
+        <td>{userDetail2?.drawCount || 0}</td>
+      </tr>
         </table>
       </div>
     </div>

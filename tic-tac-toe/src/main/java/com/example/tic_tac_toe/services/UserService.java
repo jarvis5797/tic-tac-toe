@@ -20,6 +20,9 @@ public class UserService {
 		if( users.indexOf(name)<0) {
 			User user  = new User();
 			user.setName(name);
+			user.setLossCount(0);
+			user.setWinCount(0);
+			user.setDrawCount(0);
 			userRepository.save(user);
 			return "user added";
 		}else {
@@ -30,5 +33,11 @@ public class UserService {
 	public List<String> allUsersName(){
 		return userRepository.findAllByName();
 	}
+	
+	public User getUserDetail(String name) {
+		return userRepository.findByName(name).get(0);
+	}
+	
+	
 
 }

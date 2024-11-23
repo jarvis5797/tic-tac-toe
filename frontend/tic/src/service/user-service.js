@@ -8,3 +8,7 @@ export const addUser=(userName)=>{
 export const getAllUsers=()=>{
     return connectBackend.get("/allUsers").then((response)=>response.data);
 }
+
+export const getUserDetail=(userName)=>{
+    return connectBackend.get(`/userDetail?name=${userName}`).then((response)=>response.data);
+}
