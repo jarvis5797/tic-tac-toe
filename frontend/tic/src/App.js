@@ -17,6 +17,17 @@ function App() {
 
   const [userDetail2, setUserDetail2] = useState(null);
 
+  // const [userStatus , setUserStatus] = useState({player1name , player1Status , player2name , player2Status})
+
+  const updateWinner = (winnerName , loserName , isDraw)=>{
+    return {
+      player1name : winnerName,
+      player1Status : isDraw?"draw":"winner",
+      player2name :loserName,
+      player2Status :isDraw?"draw":"loser"
+    }
+  }
+
   useEffect(() => {
     getAllUsers().then((resp) => {
       setUsers(resp);
@@ -46,7 +57,7 @@ function App() {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if ( squares[a] === squares[b] && squares[a] === squares[c]) {
-        console.log(squares[a]);
+        // console.log(squares[a]);
         
         return squares[a];
       }
@@ -65,11 +76,17 @@ function App() {
     const currentWinner = calculateWinner(newBoard);
     if (currentWinner) {
       setWinner(currentWinner);
+      updateWinner(currentWinner==='X'?userDetail1.name:userDetail2.name , currentWinner==='X'?userDetail2.name:userDetail1.name , false)
+      // console.log(updateWinner(currentWinner==='X'?userDetail1.name:userDetail2.name , currentWinner==='X'?userDetail2.name:userDetail1.name));
+      
     }
     else {
       // Check for draw
       if (!newBoard.includes(null)) {
         setWinner('Draw'); // Set the winner as 'Draw' when the board is full and no winner
+        updateWinner(userDetail1.name ,userDetail2.name , true)
+        // console.log(updateWinner(userDetail1.name ,userDetail2.name , true));
+        
       }
     }
     
